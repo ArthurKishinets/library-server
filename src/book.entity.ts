@@ -2,24 +2,24 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Book {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Column()
-  title: string;
+    @Column()
+    title: string;
 
-  @Column('text')
-  description: string;
+    @Column('text')
+    description: string;
 
-  @Column()
-  filename: string;
+    @Column()
+    filename: string;
 
-  @Column('int')
-  Comments: String[];
+    @Column('int')
+    Comments: String[];
 
-  @Column()
-  isPublished: boolean;
+    @Column()
+    isPublished: boolean;
 
-  @Column()
-  date: Date;
+    @Column()
+    date: Date;
 }
