@@ -1,7 +1,8 @@
-import { Controller, Post, UseGuards, Request, ValidationPipe, UsePipes, Body, Response } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, ValidationPipe, UsePipes, Body, Response, ForbiddenException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup';
+import { LoginDto } from './dto/LoginDto';
 import { UsersService } from '../users.module/users.service';
 
 @Controller('')
@@ -10,10 +11,14 @@ export class AuthController {
         private readonly authService: AuthService,
         private readonly usersService: UsersService) { }
 
-    @UseGuards(AuthGuard('local'))
+    @UsePipes(new ValidationPipe())
     @Post('auth/login')
-    async login(@Request() req) {
-        return this.authService.login(req.user);
+    async login(@Body() loginReq: LoginDto) {
+        const user = await this.authService.validateUser(loginReq.email, loginReq.password);
+        if (!user) {
+            throw new ForbiddenException('Incorrect email or password');
+        }
+        return this.authService.login(loginReq);
     }
 
     @UsePipes(new ValidationPipe())
@@ -29,6 +34,7 @@ export class AuthController {
                 return res.status(401).send({ error: 'User with such username is already exists' });
             }
         }
-        return res.status(201).send(user);
+        const { accessToken } = await this.authService.login(user);
+        return res.status(201).send({...user, accessToken});
     }
 }

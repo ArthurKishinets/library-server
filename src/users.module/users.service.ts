@@ -13,8 +13,8 @@ export class UsersService {
         private readonly AuthService: AuthService
     ) { }
 
-    async findOne(username: string): Promise<Users> {
-        return await this.userRepository.findOne({ username: username });
+    async findOne(email: string): Promise<Users> {
+        return await this.userRepository.findOne({ email });
     }
 
     async createOne(userObj: SignupDto): Promise<Users> | null {
